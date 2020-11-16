@@ -1,5 +1,10 @@
-import sys
-import tkinter
+import tkinter as tk
+import threading as th
+import cv2
+from PIL import Image,ImageTk
+import numpy as np
+
+
 
 root = tkinter.Tk()
 root.title(u"test")
