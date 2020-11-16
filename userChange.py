@@ -60,10 +60,10 @@ def video(num):
     channel.pause() # 一時停止
     # frame1.destroy()
     # btn1.destroy()
-    # pyx.init(frequency = 44100, size = -16, channels = 2, buffer = 4096) # 初期設定
-    # sounds = pyx.Sound(musicSet[num]) # 再生ファイルを設定
-    # sd_loop = 1 # 再生回数(-1:無限ループ)
-    # ch = sounds.play(loops = sd_loop) # 音楽再生
+    pyx.init(frequency = 44100, size = -16, channels = 2, buffer = 4096) # 初期設定
+    sounds = pyx.Sound(musicSet[num]) # 再生ファイルを設定
+    sd_loop = 1 # 再生回数(-1:無限ループ)
+    ch = sounds.play(loops = sd_loop) # 音楽再生
     
     cnn=cv2.VideoCapture(movieSet[num])
     while(cnn.isOpened()):
@@ -239,15 +239,12 @@ def cameraPng():
 def userlocal():
     channel.unpause()
     # th1 = threading.Thread(target=u)
-    # th2 = threading.Thread(target=cameraPng)
+    th2 = threading.Thread(target=cameraPng)
     # # th1.start()
-    # th2.start()
-    # print("th2Start")
-    # th2.join()
+    th2.start()
+    print("th2Start")
+    th2.join()
     # # c.release()
-    time.sleep(20)
-    global changeToF
-    changeToF = 1
     print("AAA")
 
 def again():

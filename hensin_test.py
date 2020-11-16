@@ -23,47 +23,38 @@ HEIGHT = 800
 WIDTH = 1600
 
 finalImage = ["成功画像.png","失敗画像.png"]
-musicSet = ["aaa.pm3","圧倒的敗北.mp3","変身前.mp3","正義は勝つ.pm3","top.mp3","今宵、君は月と踊る.mp3"]
+musicSet = ["aaa.pm3","圧倒的敗北.mp3","変身前.mp3","正義は勝つ.pm3","今宵、君は月と踊る.mp3","今宵、君は月と踊る.mp3"]
 movieSet = ["正義しか勝たん.mp4","圧倒的敗北.mp4","変身前.mp4","正義しか勝たん.mp4",]
 
+
+root=tk.Tk()
+root.title("camera")
+root.geometry("640x480")
+# root.resizable(width=False, height=False)
+canvas=tk.Canvas(root, width=WIDTH, height=HEIGHT)
+canvas.pack()
+
+pyx.init(frequency = 44100, size = -16, channels = 2, buffer = 4096) # 初期設定
+sounds = pyx.Sound(musicSet[4]) # 再生ファイルを設定
+sd_loop = -1 # 再生回数(-1:無限ループ)
+channel = sounds.play(loops = sd_loop) # 音楽再生
+
+
 image_path = "image.png"
-# sound_file = "evening.mp3"
-# win_sound = "win.mp3"
-# bad_sound = "bad.mp3"
 
-root = tk.Tk()
+img_top = Image.open("sippai.png")
+tkimg = ImageTk.PhotoImage(img_top)
 
-def popup(self):
-    request = tk.messagebox.askyesno("カメラアクセスについて", "このアプリではカメラを使用します。")
-    if request == True:
-        # userlocal()
-        packRelease()
-        print(musicSet[2])
-        video(2)
-        capStart()
-        u()
-        print("userLocalStart")
-        userlocal()
-        print(changeToF)
-        print(musicSet[0])
-        video(changeToF)
-        result()
-    else :
-        Label(root, text ="You clicked No :").pack()
-
-def packRelease():
-    label.pack_forget()
-    print("sceneChange")
 
 def video(num):
     print("videoStart")
     channel.pause() # 一時停止
     # frame1.destroy()
     # btn1.destroy()
-    pyx.init(frequency = 44100, size = -16, channels = 2, buffer = 4096) # 初期設定
-    sounds = pyx.Sound(musicSet[num]) # 再生ファイルを設定
-    sd_loop = 1 # 再生回数(-1:無限ループ)
-    ch = sounds.play(loops = sd_loop) # 音楽再生
+    # pyx.init(frequency = 44100, size = -16, channels = 2, buffer = 4096) # 初期設定
+    # sounds = pyx.Sound(musicSet[num]) # 再生ファイルを設定
+    # sd_loop = 1 # 再生回数(-1:無限ループ)
+    # ch = sounds.play(loops = sd_loop) # 音楽再生
     
     cnn=cv2.VideoCapture(movieSet[num])
     while(cnn.isOpened()):
@@ -86,69 +77,35 @@ def video(num):
     cv2.destroyAllWindows()
 
 
-
-# root =tk.Tk()
-# root.attributes('-fullscreen', True)  #全画面
-# root.bind('<Button-3>', lambda e: root.destroy()) #全画面キャンセル
-# root.geometry('250x250')
-#bg
-img_top = Image.open("sippai.png")
-tkimg = ImageTk.PhotoImage(img_top)
-# img_finish = Image.open("finish.png")
-# finish = ImageTk.PhotoImage(img_finish)
-img_back = Image.open("1.png")
-back = ImageTk.PhotoImage(img_back)
-label = tk.Label(root, image=back, bg="white")
-label = tk.Label(root, bg="white")
-label.bind('<Button-1>', popup)
-label.pack()
-
-
-
-
-pyx.init(frequency = 44100, size = -16, channels = 2, buffer = 4096) # 初期設定
-sounds = pyx.Sound(musicSet[5]) # 再生ファイルを設定
-sd_loop = -1 # 再生回数(-1:無限ループ)
-channel = sounds.play(loops = sd_loop) # 音楽再生
-
-
-
-canvas = tk.Canvas(root, height=HEIGHT, width=WIDTH)
-canvas.pack()
-
-
 def capStart():
-        print('camera-ON')
-        try:
-            global c, w, h, img
-            c=cv2.VideoCapture(0)
-            w, h= c.get(cv2.CAP_PROP_FRAME_WIDTH), c.get(cv2.CAP_PROP_FRAME_HEIGHT)
-            print('w:'+str(w)+'px+h:'+str(h)+'px')
+
+    print('camera-ON')
+    try:
+        global c, w, h, img
+        c=cv2.VideoCapture(0)
+        w, h= c.get(cv2.CAP_PROP_FRAME_WIDTH), c.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        print('w:'+str(w)+'px+h:'+str(h)+'px')
         
-        except:
-            import sys
-            print("error-----")
-            print(sys.exec_info()[0])
-            print(sys.exec_info()[1])
+    except:
+        import sys
+        print("error-----")
+        print(sys.exec_info()[0])
+        print(sys.exec_info()[1])
         '''終了時の処理はここでは省略します。
         c.release()
         cv2.destroyAllWindows()'''
 
 def u():#
     global img
-
     ret, frame =c.read()
-    frame = cv2.flip(frame, 1) # 左右反転
-    # frame1.tkraise()
-    if ret:            
+    frame = cv2.flip(frame, 1) # horizontal flip
+    if ret:
         img=ImageTk.PhotoImage(Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)))
         canvas.create_image(w/2,h/2,image=img)
-    
-
-
     else:
         print("u-Fail")
     root.after(1,u)
+    
 
 def cameraPng():
     while True:
@@ -179,21 +136,21 @@ def cameraPng():
                 print(leftShoulder)
                 if 450 < leftShoulder[0] < 700 and 100 < leftShoulder[1] < 500:
                     print("leftShoulder is true")
-                    if "LElbow" in data["result"]["person1"]:
-                        leftElbow = data["result"]["person1"]["LElbow"]
-                        print(leftElbow)
-                        if 300 < leftElbow[0] < 700 and 100 < leftElbow[1] < 500:
-                            print("leftElbow is true")
-                        else:
-                            print("leftElbow is false")
                 else:
                     print("leftShoulder is false")
-                    leftShoulder = [0,0]
+                if "LElbow" in data["result"]["person1"]:
+                    leftElbow = data["result"]["person1"]["LElbow"]
+                    print(leftElbow)
+                    if 300 < leftElbow[0] < 700 and 100 < leftElbow[1] < 500:
+                        print("leftElbow is true")
+                    else:
+                        print("leftElbow is false")
+                else:
+                    print("右手が映っていません")
                     leftElbow = [0,0]
             else:
                 print("右腕が映っていません")
                 leftShoulder = [0,0]
-                leftElbow = [0,0]
             if "RShoulder" in data["result"]["person1"]:
                 rightShoulder = data["result"]["person1"]["RShoulder"]
                 print(rightShoulder)
@@ -213,37 +170,46 @@ def cameraPng():
             else:
                 print("左腕が映っていません")
                 rightShoulder = [0,0]
-                rightElbow = [0,0]
         else:
             print("noHuman")
-            leftShoulder = [0,0]
-            leftElbow = [0,0]
-            rightShoulder = [0,0]
-            rightElbow = [0,0]
-        if 350 < leftShoulder[0] < 700 and 0 < leftShoulder[1] < 500 and 300 < leftElbow[0] < 700 and 100 < leftElbow[1] < 500 and 200 < rightShoulder[0] < 600 and 0 < rightShoulder[1] < 500 and 100 < rightElbow[0] < 500 and 100 < rightElbow[1] < 500: 
-            print("Aaa")
-            global changeToF,i
+        # i = 0
+        global changeToF,i
             # i = int(random.random()*10)
-            i = 0
+        i = 0
+        if 350 < leftShoulder[0] < 700 and 100 < leftShoulder[1] < 500 and 300 < leftElbow[0] < 700 and 100 < leftElbow[1] < 500 and 200 < rightShoulder[0] < 600 and 100 < rightShoulder[1] < 500 and 100 < rightElbow[0] < 500 and 100 < rightElbow[1] < 500: 
+            print("Aaa")
+            # global changeToF,i
+            # i = int(random.random()*10)
+            # i = 0
             if i == 0:
                 changeToF = 1
                 print("変身失敗！")
+                
             else:
                 changeToF = 3
                 print("変身成功！")
             break
+            
             # print
             # ここに動画の処理を入れるよ！
         time.sleep(3)
     print("cameraPng Finish")
+    video(changeToF)
+    result()
+
+
 
 def userlocal():
     channel.unpause()
+    th1 = threading.Thread(target=u)
     th2 = threading.Thread(target=cameraPng)
+    # th1.start()
     th2.start()
     print("th2Start")
-    th2.join()
+    # th2.join()
+    # c.release()
     print("AAA")
+
 
 def again():
     win_sounds.stop()
@@ -256,12 +222,7 @@ def again():
     channel = sounds.play(loops = sd_loop) # 音楽再生
 
     userlocal()
-    # channel.unpause()
-#     root = tk.Tk()
-#     # root.destroy()
-
-
-
+    
 def owari():
 
     message = tk.messagebox.askyesno("", "本当に終了する？")
@@ -286,12 +247,6 @@ def result():
     label_back.pack(side ="left")
     # label_letter = tk.Label(text = "おめでとう！")
     # label_letter.pack(side="top")
-
-
-
-
-
-
     frame_finish = tk.Frame(label_back)
     frame_finish.place(x = 600, y = 440)
 
@@ -312,21 +267,22 @@ def result():
 
 
 
-# frame1 = tk.Frame(root, bg='#EC725B', bd=5)
-# frame1.place(width = 100, height=100, x=100, y = 100)
+
+th1 = threading.Thread(target=cameraPng)
+th2 = threading.Thread(target=u)
+capStart()
+th1.start()
+th2.start()
 
 
-# btn1 = tk.Button(frame1, text='わーい', font=40,  command = result)
-# btn1.place(relx=0.5, relheight=0.75, relwidth=0.3, x=0, y= 0)
-# btn1.pack()
 
-
-
-# btn1.grid(row=0, column=0)
-
-# frame2 = tk.Frame(root, bg='black', bd=5)
-# btn3 = tk.Button(frame2, text='aa', font=40, command = userlocal)
-# btn3.pack()
-
+# capStart()
+# print(musicSet[2])
+# u()
+# print("userLocalStart")
+# userlocal()
+# print(changeToF)
+# print(musicSet[0])
+# video(changeToF)
 
 root.mainloop()
